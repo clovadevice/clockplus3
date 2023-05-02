@@ -1,0 +1,88 @@
+/dts-v1/;
+
+#include "if-s1300n_base.dtsi"
+
+/ {
+	markt,board-rev = <0x0003>;
+};
+
+&gpio_keys {
+    vdd-supply = <&pms405_l12>;
+    vdd-voltage = <3300000 3300000>;
+    vdd-cureent = <15000>;
+    
+    vol_up {
+        label = "vol_up";
+        gpios = <&tlmm 104 GPIO_ACTIVE_HIGH>;
+        linux,input-type = <1>;
+        linux,code = <KEY_VOLUMEUP>;
+        debounce-interval = <90>;
+        gpio-key,wakeup;
+    };    
+
+    vol_down {
+        label = "vol_down";
+        gpios = <&tlmm 105 GPIO_ACTIVE_HIGH>;
+        linux,input-type = <1>;
+        linux,code = <KEY_VOLUMEDOWN>;
+        debounce-interval = <90>;
+        gpio-key,wakeup;
+    };
+
+    snooze {
+        label = "snooze";
+        gpios = <&tlmm 106 GPIO_ACTIVE_HIGH>;
+        linux,input-type = <1>;
+        linux,code = <256>;
+        debounce-interval = <90>;
+        gpio-key,wakeup;
+    };
+
+    vol_mute {
+        label = "vol_mute";
+        gpios = <&tlmm 107 GPIO_ACTIVE_HIGH>;
+        linux,input-type = <1>;
+        linux,code = <KEY_MUTE>;
+        debounce-interval = <90>;
+        gpio-key,wakeup;
+    };
+
+    bluetooth {
+        label = "bluetooth";
+        gpios = <&tlmm 109 GPIO_ACTIVE_HIGH>;
+        linux,input-type = <1>;
+        linux,code = <257>;
+        debounce-interval = <90>;
+        gpio-key,wakeup;
+    };
+
+};
+
+
+&tlmm {
+	evb_tlmm_gpio_key{
+		tlmm_gpio_key_active: tlmm_gpio_key_active {
+			mux {
+				pins = "gpio104", "gpio105", "gpio106", "gpio107", "gpio109";
+			};
+
+			config {
+				pins = "gpio104", "gpio105", "gpio106", "gpio107", "gpio109";
+			drive-strength = <2>;
+			bias-disable;
+			};
+		};
+
+		tlmm_gpio_key_suspend: tlmm_gpio_key_suspend {
+			mux {
+				pins = "gpio104", "gpio105", "gpio106", "gpio107", "gpio109";
+			};
+
+			config {
+				pins = "gpio104", "gpio105", "gpio106", "gpio107", "gpio109";
+			drive-strength = <2>;
+			bias-disable;
+			};
+		};
+	};
+};

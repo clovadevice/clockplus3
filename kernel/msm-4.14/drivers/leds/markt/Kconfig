@@ -1,0 +1,4 @@
+
+config MARKT_LED_ANIMATION
+    bool "MARKT LED ANIMATION"
+

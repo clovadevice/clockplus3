@@ -1,0 +1,10 @@
+
+
+config MARKT_FACTORY_INFO
+	bool  "Select use markt factory info"
+	default n
+
+
+config MARKT_IR_GPIO
+	bool "select use ir-gpio driver"
+	default n

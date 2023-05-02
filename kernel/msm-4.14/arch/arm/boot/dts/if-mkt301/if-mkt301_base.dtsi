@@ -1,0 +1,305 @@
+/*
+ * Copyright (c) 2019-2020, The Linux Foundation. All rights reserved.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 and
+ * only version 2 as published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "qcs404.dtsi"
+#include "qcs405-wsa-audio-overlay.dtsi"
+#include "qcs405-circular-pca9956.dtsi"
+
+/ {
+	model = "MarkT, Inc. QCS404 IF-MKT300";
+	compatible = "qcom,qcs404-iot", "qcom,qcs404", "qcom,iot";
+	qcom,board-id = <0x010020 0x3>;
+	markt,model-name = "BFR-9000";
+	aliases {
+        uart0 = &blsp1_uart4_hs;    // /dev/ttyHS0 : WCNS3980
+        uart1 = &blsp2_uart1_hs;    // /dev/ttyHS1
+        uart2 = &blsp1_uart1_hs;    // /dev/ttyHS2 : Body Friends MCU
+    };
+};
+
+
+&pdm_pwm0 {
+	status  = "okay";
+	pinctrl-names = "pwm_led_act", "pwm_led_sus";
+	pinctrl-0 = <&pwm_led1_active &pwm_led2_active>;
+	pinctrl-1 = <&pwm_led1_sleep &pwm_led2_sleep>;
+};
+
+&pdm_pwm1 {
+	status = "disabled";
+};
+
+&pdm_pwm2 {
+	status  = "okay";
+	pinctrl-names = "pwm_led_act", "pwm_led_sus";
+	pinctrl-0 = <&pwm_led23_active>;
+	pinctrl-1 = <&pwm_led23_sleep>;
+};
+
+
+&soc {
+    pwm-leds {
+		compatible = "pwm-leds";
+		
+        ledsec2_r: pwm_led@23 {            
+			label = "ledsec2_r";
+			max_brightness = <255>;
+			pwms = <&pdm_pwm2 2 10000>;
+			linux,default-trigger = "default-on";			
+			markt,led-index = <4>;
+		};
+
+        ledsec2_g: pwm_led@1 {            
+			label = "ledsec2_g";
+			max_brightness = <255>;
+			pwms = <&pdm_pwm0 0 10000>;
+			linux,default-trigger = "default-on";			
+			markt,led-index = <5>;
+        };
+
+        ledsec2_b: pwm_led@2 {
+			label = "ledsec2_b";
+			max_brightness = <255>;
+			pwms = <&pdm_pwm0 1 10000>;
+			linux,default-trigger = "default-on";			
+			markt,led-index = <6>;
+        };		
+    };
+};
+
+&gpio_keys {
+
+    vol_up {
+        label = "vol_up";
+        gpios = <&tlmm 104 GPIO_ACTIVE_LOW>;
+        linux,input-type = <1>;
+        linux,code = <KEY_VOLUMEUP>;
+        debounce-interval = <15>;
+        gpio-key,wakeup;
+    };    
+
+    vol_down {
+        label = "vol_down";
+        gpios = <&tlmm 105 GPIO_ACTIVE_LOW>;
+        linux,input-type = <1>;
+        linux,code = <KEY_VOLUMEDOWN>;
+        debounce-interval = <15>;
+        gpio-key,wakeup;
+    };
+
+    activate {
+        label = "activate";
+        gpios = <&tlmm 106 GPIO_ACTIVE_LOW>;
+        linux,input-type = <1>;
+        linux,code = <256>;
+        debounce-interval = <15>;
+        gpio-key,wakeup;
+    };
+
+    vol_mute {
+        label = "vol_mute";
+        gpios = <&tlmm 107 GPIO_ACTIVE_LOW>;
+        linux,input-type = <1>;
+        linux,code = <KEY_MUTE>;
+        debounce-interval = <15>;
+        gpio-key,wakeup;
+    };
+
+    bluetooth_key: bluetooth {
+        label = "bluetooth";
+        gpios = <&tlmm 108 GPIO_ACTIVE_LOW>;
+        linux,input-type = <1>;
+        linux,code = <257>;
+        debounce-interval = <15>;
+        gpio-key,wakeup;
+    };
+
+};
+
+
+&ep92a6_hdmi_64 {
+    status = "disabled";
+};
+
+&wcd9xxx_intc {
+    status = "disabled";
+};
+
+&wcd9335 {
+    status = "disabled";
+};
+
+&emac_hw {
+    status = "disabled";
+};
+
+&qnand_1 {
+	status = "ok";
+};
+
+&wsa881x_0211 {
+    status = "disabled";
+};
+
+&wsa881x_0212 {
+    status = "disabled";
+};
+
+&wsa881x_0214 {
+    status = "disabled";
+};
+
+&cx2092x {
+    status = "okay";
+};
+
+&lineout_booster_gpio {
+    status = "disabled";
+};
+
+&lineout_booster_active {
+    status = "disabled";
+};
+
+&lineout_booster_sleep {
+    status = "disabled";
+};
+
+&dai_mi2s3 {
+    qcom,msm-mi2s-rx-lines = <0>;
+    qcom,msm-mi2s-tx-lines = <1>;
+};
+
+&qcs405_snd {
+
+    markt,cx2092x-name = "cx2092x.6-0041";
+    markt,cx2092x-busnum = <6>;
+    markt,cx2092x-reg = <0x41>;
+
+    //qcom,msm-mi2s-master = <1>, <0>, <1>, <0>, <1>, <1>;
+    qcom,msm-mi2s-master = <1>, <0>, <1>, <1>, <1>, <1>;
+    qcom,quat-mi2s-gpios = <&quat_mi2s_gpios>;
+    qcom,lineout-booster-gpio = <0>;
+
+    qcom,spdif-audio-intf = <0>;
+    qcom,wcn-btfm = <1>;
+    qcom,tasha-codec = <0>;	
+	qcom,wsa-codec = <1>;
+    qcom,wsa-max-devs = <1>;
+    qcom,wsa-devs = <&wsa881x_0213>;
+    qcom,wsa-aux-dev-prefix = "SpkrLeft";
+
+    asoc-codec = <&stub_codec>, <&bolero>, <&cx2092x>;
+    asoc-codec-names = "msm-stub-codec.1", "bolero_codec", "cx2092x.6-0041";
+};
+
+&tlmm {
+	evb_tlmm_gpio_key{
+		tlmm_gpio_key_active: tlmm_gpio_key_active {
+			mux {
+				pins = "gpio104", "gpio105", "gpio106", "gpio107", "gpio108";
+			};
+
+			config {
+				pins = "gpio104", "gpio105", "gpio106", "gpio107", "gpio108";
+                drive-strength = <2>;
+                bias-pull-up;
+			};
+		};
+
+		tlmm_gpio_key_suspend: tlmm_gpio_key_suspend {
+			mux {
+				pins = "gpio104", "gpio105", "gpio106", "gpio107", "gpio108";
+			};
+
+			config {
+				pins = "gpio104", "gpio105", "gpio106", "gpio107", "gpio108";
+                drive-strength = <2>;
+                bias-disable;
+			};
+		};
+	};
+};
+
+&wsa_macro {
+    markt,ldo-gpios = <&tlmm 63 GPIO_ACTIVE_LOW>;
+};
+
+
+&cdsp_fw_mem {
+	reg = <0x0 0x88600000 0x0 0x600000>;
+};
+
+&wlan_msa_mem {
+	reg = <0x0 0x88C00000 0x0 0x100000>;
+};
+
+
+&blsp2_uart1_active {
+    mux {
+        pins = "gpio26", "gpio27";
+        function = "blsp_uart5";
+    };
+    config {
+        pins = "gpio26", "gpio27";
+        drive-strength = <2>;
+        bias-disable;
+    };
+};
+
+&blsp2_uart1_sleep {
+    mux {
+        pins = "gpio26", "gpio27";
+        function = "gpio";
+    };
+    config {
+        pins = "gpio26", "gpio27";
+        drive-strength = <2>;
+        bias-disable;
+    };
+};
+
+&blsp2_uart1_hs {
+    status = "okay";
+};
+
+
+&blsp1_uart1_active {
+    mux {
+        pins = "gpio30", "gpio31";
+        function = "blsp_uart0";
+    };
+    config {
+        pins = "gpio30", "gpio31";
+        drive-strength = <2>;
+        bias-disable;
+    };
+};
+
+&blsp1_uart1_sleep {
+    mux {
+        pins = "gpio30", "gpio31";
+        function = "gpio";
+    };
+    config {
+        pins = "gpio30", "gpio31";
+        drive-strength = <2>;
+        bias-disable;
+    };
+};
+
+&blsp1_uart1_hs {
+    status = "okay";
+};

@@ -1,0 +1,7 @@
+/dts-v1/;
+
+#include "if-s1300n_base.dtsi"
+
+/ {
+	markt,board-rev = <0x0001>;
+};
